@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="well hidden-phone">
+    <h3>{% trans "Taglist" %}</h3>
+    <ul class="unstyled" id="taglistul">
+    {% for tag in tags %}
+        <li><a href="/main/home/?tag={{tag}}" class="label label-info">#{{tag}}</a></li>
+    {% endfor %}
+    </ul>
+</div>

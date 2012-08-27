@@ -1,0 +1,14 @@
+{% load i18n %}
+{% url registration_activate activation_key as activation_url %}
+{% blocktrans with site_name=site.name site_domain=site.domain %}
+You asked to register at {{site_name }}.
+
+If this wasn't you ignore this email and your address will be deleted from our records.
+
+For the activation of your account please follow the link provided in {{ expiration_days }} days.
+
+http://{{site_domain}}{{ activation_url}}
+
+Best regards,
+{{ site_name }}
+{% endblocktrans %} 

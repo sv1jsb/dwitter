@@ -1,0 +1,30 @@
+{% load url from future %}
+{% load i18n %}
+    {% if nfd %}<div id="nfd">{{nfd}}</div>{% endif %}
+    {% for dwit in dwits %}
+        <div class="well well-small">
+        <table class="dwittable"><tr><td align="left"><img src="{{dwit.member.image.url}}" class="pimg2" /> <b>{{dwit.member.nick}}</b>
+ @<a href="{% url 'profile' dwit.member.user.username %}">{{dwit.member.user.username}}</a></td><td align="right">
+        <div class="dwitstamp">{{dwit.dwitter_stamp}}</div></td></tr>
+        <tr><td colspan="2"><p class="lead">{{dwit.content|safe}}</p></td></tr>
+        <tr class="dwittabletr">
+            <td colspan="2">
+            <div style="float:left;">
+                {% if dwit.redwit %}<span class="label"><i class="icon-retweet"></i></span> Redwited by <a href="{% url 'profile' dwit.redwit.user.username %}">{{dwit.redwit.nick}}</a>
+                {%elif dwit.replyto%}<span class="label"><i class="icon-repeat"></i></span> Reply to... <a href="javascript:void(0);" onclick="getreply('{{dwit.replyto.id}}',this)" id="expand"><i class="icon-chevron-down"></i></a>
+                {% else %}&nbsp;{% endif %}
+            </div>
+            <div style="float:right;">
+                {% if profile or search %}
+                    &nbsp;
+                {% else %}{% spaceless %}
+                    <button class="btn btn-mini btn-success" onclick="reply('{{dwit.member.user.username}}','{{dwit.id}}')"><i class="icon-repeat"></i> Reply</button>&nbsp;
+                    <button class="btn btn-mini btn-warning" onclick="redwit('{{dwit.id}}')"><i class="icon-retweet"></i> Redwit</button>{% endspaceless %}
+                {% endif %}
+            </div>
+            </td>
+        </tr>
+        </table>
+        <div id="replydiv{{dwit.replyto.id}}"></div>
+        </div>
+    {% endfor %}

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load i18n %}
+{% block title %}{{block.super}}{% trans "Search" %}{% endblock %}
+{% block styles %}
+<link href="{{STATIC_URL}}css/dwitter_style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="span4">
+        <legend>{% trans "Search" %}</legend>
+        <div class="control-group">
+          <div class="controls">
+            {{form.member}}
+            <p class="help-block">{{form.member.help_text}}</p>
+          </div>
+        </div>
+        <br />
+        <div class="control-group">
+          <div class="controls">
+            {{form.hash}}
+            <p class="help-block">{{form.hash.help_text}}</p>
+          </div>
+        </div>
+        <div class="form-actions">
+        <a href="javascript:void(0);" onclick="srch()" class="btn btn-primary">{% trans "Search" %}</a> <a href="javascript:void(0);" onclick="clr()" class="btn">{% trans "Clear" %}</a> 
+        </div>
+    </div>
+    <div class="span8">
+        <legend>{% trans "Results" %}</legend>
+        <div id="results">
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{STATIC_URL}}js/twitter-text.js"></script>
+<script type="text/javascript">
+    window.navbar = "{{navbar}}";
+</script>
+<script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+<script type="text/javascript">
+var loading = false;
+var mb, hs;
+
+$(document).ready(function(){
+    $('#'+window.navbar).addClass('active');
+});
+
+$(window).scroll(function(){
+    if ($('body').height() <= ($(window).height() + $(window).scrollTop())) {
+        if (loading == false) {
+            var nfd = $("#nfd").html();
+            if( nfd ){
+                hs = encodeURIComponent($("#id_hash").val());
+                loading = true;
+                $('#results').children().last().after('<img src="{{STATIC_URL}}img/loading.gif" id="imgloading" />');
+                $.get('/main/getflow/'+nfd+'/?hash='+hs, function(data){ 
+                    $('#results').children('#nfd').remove();
+                    $('#results').children('#imgloading').remove();
+                    $('#results').children().last().after(data);
+                    loading = false;
+                });
+            }
+        }
+    }
+});
+function srch(){
+    mb = encodeURIComponent($("#id_member").val());
+    hs = encodeURIComponent($("#id_hash").val());
+    if (mb){
+        $.get('/main/haystack/?q='+mb,function(data){
+            $("#results").html(data);            
+        });
+    } else if (hs) {
+        $("#results").html('<img src="{{STATIC_URL}}img/loading.gif" id="imgloading" />');
+        $.get('/main/getflow/0/?hash='+hs,function(data){
+            data = $.trim(data);
+            if(data.length>0) {
+                $('#results').html(data);
+            } else {
+                $('#results').html('<div class="well">'+gettext('No results')+'</div>');
+            }
+        });
+    }
+    return false
+}
+function pagesrch(q, pn){
+    $.get('/main/haystack/?q='+q+'&page='+pn, function(data){
+        $("#results").html(data);            
+    });
+    return false
+}
+function clr(){
+    $("#id_member").val('');
+    $("#id_hash").val('');
+    $("#results").html('');
+    return false
+}
+function getreply(dwitid,obj){
+    if ($(obj).find(".icon-chevron-down").length == 1) {
+        if ($('#replydiv'+dwitid+' :hidden').length == 0){
+            $.get('/main/getreplyto/'+dwitid+'/', function(data){
+                $('#replydiv'+dwitid).html(process(data));
+            });
+        } else {
+            $('#replydiv'+dwitid).toggle();
+        }
+        $(obj).html('<i class="icon-chevron-up"></i>');
+    } else {
+        $('#replydiv'+dwitid).toggle();
+        $(obj).html('<i class="icon-chevron-down"></i>');
+    }
+    return false
+}
+function process(data) {
+    data = '<div>'+data+'</div>';
+    var obj = $(data).clone();
+    var dcont = obj.find('.lead').html();
+    dcont = twttr.txt.autoLinkHashtags(dcont, {
+                'hashtagUrlBase':'/main/home/?tag=',
+                'hashtagClass':'label label-info vmiddle',
+            });
+    obj.find('.lead').html(dcont);
+    return obj.html();
+} 
+</script>
+{% endblock %}
+

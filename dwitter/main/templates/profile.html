@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load i18n %}
+{% block title %}{{block.super}}{% trans "Profile of user" %} {{m.user.username}}{% endblock %}
+{% block styles %}
+<link href="{{STATIC_URL}}css/dwitter_style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+{% if form %}
+<div class="modal fade hide" id="ChPassModal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>{% trans "Change password" %}</h3>
+    </div>
+    <div class="modal-body" id="ChPassModalBody">
+    </div>
+    <div class="modal-footer" id="ChPassModalFooter">
+        <a href="javascript:void(0);" class="btn" data-dismiss="modal">{% trans "Cancel" %}</a>
+        <a href="javascript:void(0);" class="btn btn-primary" onclick="submitchpass()">{% trans "Submit" %}</a>
+    </div>
+    <div class="modal-footer hide" id="ChPassModalFooterOK">
+        <a href="javascript:void(0);" class="btn btn-primary" data-dismiss="modal">OK</a>
+    </div>
+</div>
+{% endif %}
+<div class="row">
+    <div class="span4">
+        <div class="row">
+            <div class="span1">
+                <img src="{{m.image.url}}" class="pimg3"/>
+            </div>
+            <div class="span3">
+                <p class="pusername"><h3>{{m.user.username}}</h3></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span4">
+                {% if form %}<form action="" method="post" enctype="multipart/form-data">{% csrf_token%}{% endif %}
+                <p><b>{% trans "Name" %}</b><br />{% if form %}{{form.nick}}{% else %}{{m.nick}}{% endif %}</p>
+                <p><b>{% trans "Description" %}</b><br />{% if form %}{{form.descr}}{% else %}<pre>{{m.descr}}</pre>{%endif%}</p>
+                {% if form %}<p><b>{% trans "Image" %}</b><br /><input type="file" name="image" id="id_image" /></p>
+                <p><b>{% trans "Language" %}</b><br />
+                    <select name="language" id="languge">
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    {% for language in languages %}
+                    <option value="{{ language.code }}" {% if language.code == current_lang %}selected{% endif %}>{{ language.name_local }} ({{ language.code }})</option>
+                    {% endfor %}
+                    </select>
+                </p>
+                <p><input type="submit" value="{% trans 'Submit' %}" class="btn btn-primary" /></form></p>
+                <p><a href="javascript:void(0);" onclick="showchpass()" class="label label-warning">{% trans "Change password" %}</a></p><br />
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="span4" id="message">
+                {% if success %}<div class="alert alert-success"><button class="close" data-dismiss="alert" href="#">×</button>{{success|safe}}</div>
+                {%elif ferrors%}<div class="alert alert-error"><button class="close" data-dismiss="alert" href="#">×</button>{{ferrors|safe}}</div>{%endif%} 
+            </div>
+        </div>
+        <div class="row">
+            <div class="span4">
+                <table class="table table-bordered"><thead><tr><th>Dwits</th><th>Following</th><th>Followers</th></tr></thead>
+                <tbody><tr><td id="nodwits">{{nodwits}}</td><td>{{following}}</td><td>{{followers}}</td></tr></tbody></table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span4" id="fbtn">
+                {% if action %}
+                    {% if action == 'follow' %}
+                        <a href="javascript:void(0);" class="btn btn-primary" onclick="follow('{{m.user.username}}')"><i class="icon-plus-sign"></i> Follow</a>
+                    {% else %}
+                        <a href="javascript:void(0);" class="btn" onclick="unfollow('{{m.user.username}}')"><i class="icon-minus-sign"></i> Unfollow</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="span8">
+        <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab">Dwits</a></li>
+                <li><a href="#tab2" data-toggle="tab">Following</a></li>
+                <li><a href="#tab3" data-toggle="tab">Followers</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+                    <div id="flowdwit"><img src="{{STATIC_URL}}img/loading.gif" id="imgloading" /></div>
+                </div>
+                <div class="tab-pane" id="tab2">
+                    {% for f in fing %}
+                        <div class="well well-small">
+                            <table width="100%"><tr><td align="left"><img src="{{f.image.url}}" class="pimg2" /> <b>{{f.nick}}</b> @<a href="{% url 'profile' f.user.username %}">{{f.user.username}}</a></td></tr>
+                            <tr><td>{{f.descr}}</td></tr>
+                            </table>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="tab-pane" id="tab3">
+                    {% for fer in fers %}
+                        <div class="well well-small">
+                            <table width="100%"><tr><td align="left"><img src="{{fer.image.url}}" class="pimg2" /> <b>{{fer.nick}}</b> @<a href="{% url 'profile' fer.user.username %}">{{fer.user.username}}</a></td></tr>
+                            <tr><td>{{fer.descr}}</td></tr>
+                            </table>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{STATIC_URL}}js/twitter-text.js"></script>
+<script src="{{STATIC_URL}}js/django_csrf.js"></script>
+<script type="text/javascript">window.navbar="{{navbar}}";</script>
+<script type="text/javascript">
+var loading = false;
+
+$(window).load(function(){
+    $('#'+window.navbar).addClass('active');
+    if($('#message').children().length>0){setTimeout(function(){$("#message").html('')},5000);};
+    $.get('/main/getflow/0/?username={{m.user.username}}', function(data){
+        $('#flowdwit').html(data);
+    });
+});
+
+$(window).scroll(function(){
+    if ($('body').height() <= ($(window).height() + $(window).scrollTop())) {
+        if ($("#tab1:visible").length > 0){
+            if (loading == false) {
+                var nfd = $("#nfd").html();
+                if( nfd ){
+                    loading = true;
+                    $('#flowdwit').children().last().after('<img src="{{STATIC_URL}}img/loading.gif" id="imgloading" />');
+                    $.get('/main/getflow/'+nfd+'/?username={{m.user.username}}', function(data){
+                        $('#flowdwit').children('#nfd').remove();
+                        $('#flowdwit').children('#imgloading').remove();
+                        $('#flowdwit').children().last().after(data);
+                        loading = false;
+                    });
+                }
+            }
+        }
+    }
+})
+
+function getreply(dwitid,obj){
+    if ($(obj).find(".icon-chevron-down").length == 1) {
+        if ($('#replydiv'+dwitid+' :hidden').length == 0){
+            $.get('/main/getreplyto/'+dwitid+'/', function(data){
+                $('#replydiv'+dwitid).html(process(data));
+            });
+        } else {
+            $('#replydiv'+dwitid).toggle();
+        }
+        $(obj).html('<i class="icon-chevron-up"></i>');
+    } else {
+        $('#replydiv'+dwitid).toggle();
+        $(obj).html('<i class="icon-chevron-down"></i>');
+    }
+    return false
+}
+function process(data) {
+    data = '<div>'+data+'</div>';
+    var obj = $(data).clone();
+    var dcont = obj.find('.lead').html();
+    dcont = twttr.txt.autoLinkHashtags(dcont, {
+                'hashtagUrlBase':'/main/home/?tag=',
+                'hashtagClass':'label label-info vmiddle',
+            });
+    obj.find('.lead').html(dcont);
+    return obj.html();
+} 
+function follow(uname) {
+    $.get('/main/follow/'+uname+'/', function(data) {
+        $("#message").html('<div class="alert alert-success"><button class="close" data-dismiss="alert" href="#">×</button>'+data+'</div>');
+        setTimeout(function(){$("#message").html('')},5000);
+        $("#fbtn").html('<a href="javascript:void(0);" class="btn" onclick="unfollow(\'{{m.user.username}}\')"><i class="icon-minus-sign"></i> Unfollow</a>');
+    });
+    return false
+}
+function unfollow(uname){
+    $.get('/main/unfollow/'+uname+'/', function(data) {
+        $("#message").html('<div class="alert"><button class="close" data-dismiss="alert" href="#">×</button>'+data+'</div>');
+        setTimeout(function(){$("#message").html('')},5000);
+        $("#fbtn").html('<a href="javascript:void(0);" class="btn btn-primary" onclick="follow(\'{{m.user.username}}\')"><i class="icon-plus-sign"></i> Follow</a>');
+    });
+    return false
+}
+function showchpass(){
+    $('#ChPassModalFooter').show();
+    $('#ChPassModalFooterOK').hide();
+    $.get('/accounts/password/change/',function (data){
+        $('#ChPassModalBody').html(data);
+    });
+    $('#ChPassModal').modal('show');
+}
+function submitchpass(){
+    $.post('/accounts/password/change/',$('#chpassform').serialize(), function (data){
+        $('#ChPassModalBody').html(data);
+        if($('#ChPassModalBody').find('#chpasssuccess').length > 0){
+            $('#ChPassModalFooter').hide();
+            $('#ChPassModalFooterOK').show();
+            setTimeout(function(){$('#ChPassModal').modal('hide')},3000);
+        }
+    });
+}
+</script>
+{% endblock %}
+

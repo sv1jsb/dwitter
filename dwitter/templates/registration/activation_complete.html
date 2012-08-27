@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{{block.super}}{% trans "Activation complete" %}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="span4 offset4 well">
+        <h3>{% trans "Activation complete" %}</h3>
+        {% url auth_login as authlogin %}
+        {% blocktrans %}
+        Thank you, your registration is complete. You can <a href='{{ authlogin }}'>login</a> using your username and password.
+        {% endblocktrans %}
+    </div>
+</div>
+{% endblock %}

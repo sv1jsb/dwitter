@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load i18n %}
+{% block title %}{{block.super}}{% trans "Login" %}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="span4 offset4 well">
+        <h1>{% trans "Login" %}</h1><br />
+        <form method="post" action="/accounts/login/">{% csrf_token %}
+        <fieldset>
+        {{form.as_p}}
+        <div style="float:left;"><input type="submit" value="{% trans 'Submit' %}" class="btn btn-primary" /></div>
+        <div style="float:right;"><a href="{% url 'auth_password_reset' %}" class="btn btn-small">{% trans "Forgot your password?" %}</a></div>
+        </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$(window).load(function(){
+    $('#{{navbar}}').addClass('active');
+});
+</script>
+{% endblock %}

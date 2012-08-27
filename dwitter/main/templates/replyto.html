@@ -1,0 +1,11 @@
+{% load url from future %}
+{% load i18n %}
+<br />
+<table class="dwittable tablereply"><tr><td align="left"><img src="{{dwit.member.image.url}}" class="pimg2" /> <b>{{dwit.member.nick}}</b>
+ @<a href="{% url 'profile' dwit.member.user.username %}">{{dwit.member.user.username}}</a></td><td align="right">
+        {{dwit.dwitter_stamp}}</td></tr>
+        <tr><td colspan="2"><p class="lead">{{dwit.content|safe}}</p></td></tr>
+        <tr class="dwittabletr"><td colspan="2"><div style="float:left;">{% if dwit.redwit %}<span class="label"><i class="icon-retweet"></i></span> Redwited by <a href="{% url 'profile' dwit.redwit.user.username %}">{{dwit.redwit.nick}}</a>{%elif dwit.replyto%}<span class="label"><i class="icon-repeat"></i></span> Reply to... <a href="javascript:void(0);" onclick="getreply('{{dwit.replyto.id}}',this)" id="expand"><i class="icon-chevron-down"></i></a>{% else %}&nbsp;{% endif %}</div><div style="float:right;">&nbsp;</div></td></tr>
+</table>
+<div id="replydiv{{dwit.replyto.id}}"></div>
+

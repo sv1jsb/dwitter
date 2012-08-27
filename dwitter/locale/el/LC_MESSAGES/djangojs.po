@@ -1,0 +1,43 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-18 17:33+0300\n"
+"PO-Revision-Date: 2012-08-18 00:58+0200\n"
+"Last-Translator: Andreas Porevopoulos <sv1jsb@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Poedit-Language: Greek\n"
+"X-Poedit-Country: Greece\n"
+
+#: static/js/home.js:102
+msgid "Nothing to send!"
+msgstr "Δεν γράψατε τίποτα"
+
+#: static/js/home.js:133 static/js/home.js.c:144 static/js/search.js:57
+#: static/js/search.js.c:68
+msgid "expand"
+msgstr "επέκταση"
+
+#: static/js/home.js:141 static/js/search.js:65
+msgid "collapse"
+msgstr "σύμπτυξη"
+
+#: static/js/home.js:158
+#, c-format
+msgid "There is %s new dwit."
+msgid_plural "There are %s new dwits."
+msgstr[0] "Υπάρχει %s νέο dwit."
+msgstr[1] "Υπάρχουν %s νέα dwit."
+
+#: static/js/search.js:38
+msgid "No results"
+msgstr "Δεν βρέθηκαν αποτελέσματα"

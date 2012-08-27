@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{{block.super}}{% if account %}{% trans "Activation complete" %}{% else %}{% trans "Activation error" %}{% endif %}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="span4 offset4 well">
+    {% if account %}
+        <h3>{% trans "Activation complete" %}</h3>
+        {% url auth_login as authlogin %}
+        {% blocktrans %}
+        Thank you {{account}}, your registration is complete. You can <a href='{{ authlogin }}'>login</a> using your username and password.
+        {% endblocktrans %}
+    {% else %}
+        <h3>{% trans "Activation error" %}</h3>
+        {% trans "Oops &ndash; it looks like this key is not valid. Please check the link provided." %}
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

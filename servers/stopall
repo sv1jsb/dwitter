@@ -1,0 +1,12 @@
+#!/bin/sh
+. $(dirname $(readlink -f $0))/servers.conf
+
+$SERVERS_DIR/celerybeatd stop
+
+$SERVERS_DIR/celeryev stop
+
+echo "Stoping celeryd"
+$SERVERS_DIR/celeryd stop
+
+echo "Stoping redis"
+$SERVERS_DIR/redisd stop

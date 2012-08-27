@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{block.super}}{% trans "Registration" %}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="span4 offset4 well">
+        <h1>{% trans "Registration" %}</h1><br />
+        <form method="post" action="/accounts/register/">{% csrf_token %}
+        <fieldset>
+        {{form.as_p}}
+        <input type="submit" value="{% trans 'Submit' %}" class="btn btn-primary"/>
+        </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#{{navbar}}").addClass("active");
+});
+</script>
+{% endblock %}

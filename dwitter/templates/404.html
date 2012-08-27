@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{block.super}}{% trans "Not found" %}{% endblock %}
+{% block content%}
+<div class="row">
+    <div class="span4 offset4 well">
+        <img src="{{STATIC_URL}}img/dwitter.png" />
+        <p class="lead">{% trans "Not found" %}</p>
+    </div>
+</div>
+{% endblock %}

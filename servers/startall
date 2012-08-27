@@ -1,0 +1,11 @@
+#!/bin/bash
+. $(dirname $(readlink -f $0))/servers.conf
+
+$SERVERS_DIR/redisd start
+
+echo "Starting celeryd"
+$SERVERS_DIR/celeryd start
+
+$SERVERS_DIR/celeryev start
+
+$SERVERS_DIR/celerybeatd start

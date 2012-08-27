@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load i18n %}
+{% block title %}{{block.super}}{% if tag %}{% trans "Tag flow" %}{% else %}{% trans "Dwit flow" %}{% endif %}{% endblock %}
+{% block styles %}
+<link href="{{STATIC_URL}}css/dwitter_style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="modal fade hide" id="RedwitModal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>Redwit</h3>
+    </div>
+    <div class="modal-body" id="RedwitModalBody">
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:void(0);" class="btn" data-dismiss="modal">{% trans "Cancel" %}</a>
+        <a href="javascript:void(0);" class="btn btn-primary" data-dismiss="modal" onclick="sendredwit()">Redwit</a>
+    </div>
+</div>
+<div class="modal fade hide" id="ReplyModal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>Reply</h3>
+    </div>
+    <div class="modal-body" id="ReplyModalBody">
+        <input type="hidden" id="replydwitid" />
+        <textarea id="replydwit" rows="3" class="span5"></textarea>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:void(0);" class="btn" data-dismiss="modal">{% trans "Cancel" %}</a>
+        <a href="javascript:void(0);" class="btn btn-primary" data-dismiss="modal" onclick="dwit($('#replydwit').val(),$('#replydwitid').val())">Reply</a>
+    </div>
+</div>
+<div class="row">
+    <div class="span4">
+        <div class="row">
+            <div class="span4">
+                <div class="hidden-phone">
+                    <p><img src="{{me.image.url}}" class="pimg2" /> <b>{{me.nick}}</b> @{{me.user.username}}</a><br /></p>
+                    <table class="table table-bordered"><thead><tr><th>Dwits</th><th>Following</th><th>Followers</th></tr></thead>
+                    <tbody><tr><td id="nodwits">{{nodwits}}</td><td>{{following}}</td><td>{{followers}}</td></tr></tbody></table>
+                    <br />
+                </div>
+                <legend>{% trans "Send a dwit" %}</legend>
+                <textarea id="dwit" rows="3" class="span4"></textarea>
+                <a href="javascript:void(0);" onclick="dwit($('#dwit').val())" class="btn btn-primary" />{% trans "Send" %}</a>
+                <div id="taglist"><img src="{{STATIC_URL}}img/loading.gif" id="imgloading2" /></div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="span4">
+                <div id="message">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="span8">
+        <div class="page-header"><h1>{% if tag %}{% trans "Tag flow" %} <span class="label label-info vmiddle">#{{tag}}</span>{% else %}{% trans "Dwit flow" %}{% endif %}</h1></div>
+        <div id="dwitnotice"></div>
+        <div id="flowdwit"><img src="{{STATIC_URL}}img/loading.gif" id="imgloading" /></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{STATIC_URL}}js/socket.io.js"></script>
+<script src="{{STATIC_URL}}js/twitter-text.js"></script>
+<script type="text/javascript">
+    WEB_SOCKET_SWF_LOCATION="{{ STATIC_URL }}flashsocket/WebSocketMain.swf";
+    window.room = "{% if tag %}{{ tag }}{% else %}{{ me.user.username }}{% endif %}";
+    window.kind = "{% if tag %}tag{% else %}dwit{% endif %}";
+    window.navbar = "{{navbar}}";
+</script>
+<script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+<script src="{{STATIC_URL}}js/django_csrf.js"></script>
+<script type="text/javascript">
+var loading = false;
+var socket = io.connect('/dwits');
+var dwitobjs = new Array();
+var doctitle = '';
+
+socket.on('connect', function () {
+    socket.emit('join', window.room); 
+});
+
+socket.on('newdwit', function(data){
+    dwitobj = JSON.parse(data);
+    dwitobj.content = process(dwitobj.content);
+    dwitobjs.push(dwitobj);
+    var fmts = ngettext('There is %s new dwit.','There are %s new dwits.',dwitobjs.length);
+    $("#dwitnotice").html('<div class="alert">'+interpolate(fmts,[dwitobjs.length])+'</div>');
+    document.title = '('+dwitobjs.length+') '+ doctitle;
+});
+
+$(window).on('beforeunload',function(){socket.disconnect();});
+
+$(window).load(function(){
+    if(window.kind == 'tag'){ 
+        $.get('/main/getflow/0/?tag='+window.room, function(data){
+            $('#flowdwit').html(data);
+        });
+    } else {
+        $.get('/main/getflow/0/', function(data){
+            $('#flowdwit').html(data);
+        });
+    }
+    $('#dwitnotice').click(function(){
+        $("#dwitnotice").html('');
+        var nfd = $("#nfd").html();
+        if(nfd){nfd=parseInt(nfd)+dwitobjs.length;$("#nfd").html(nfd);}
+        for(var i=0;i<dwitobjs.length;i++){
+            $("#flowdwit").prepend(dwitobjs[i].content);
+        }
+        dwitobjs = [];
+        document.title = doctitle;
+    });
+    $.get('/main/gettags/', function(data){
+        $("#taglist").html(data);
+    });
+    $('#'+window.navbar).addClass('active');
+    doctitle = document.title;
+});
+
+$(window).scroll(function(){
+    if ($('body').height() <= ($(window).height() + $(window).scrollTop())) {
+        if (loading == false) {
+            var nfd = $("#nfd").html();
+            if( nfd ){
+                loading = true;
+                $('#flowdwit').children().last().after('<img src="{{STATIC_URL}}img/loading.gif" id="imgloading" />');
+                if (window.kind == 'tag'){
+                    $.get('/main/getflow/'+nfd+'/?tag='+window.room, function(data){
+                        $('#flowdwit').children('#nfd').remove();
+                        $('#flowdwit').children('#imgloading').remove();
+                        $('#flowdwit').children().last().after(data);
+                        loading = false;
+                    });
+                } else {
+                     $.get('/main/getflow/'+nfd+'/', function(data){
+                        $('#flowdwit').children('#nfd').remove();
+                        $('#flowdwit').children('#imgloading').remove();
+                        $('#flowdwit').children().last().after(data);
+                        loading = false;
+                    });
+                }
+            }
+        }
+    }
+});
+
+function dwit(dw,dwitid){
+    if(dw){
+        $.post('/main/dwit/',{dwit:dw,dwitid:dwitid},function(data){
+                $("#message").html('<div class="alert alert-'+data.status+'"><button class="close" data-dismiss="alert" href="#">×</button>'+data.message+'</div>');
+                setTimeout(function(){$("#message").html('')},5000);
+                $("#dwit").val("");
+                nd = $("#nodwits").html();
+                nd++;
+                $("#nodwits").html(nd);
+        });
+    } else {
+        var nothing = gettext('Nothing to send!');
+        $("#message").html('<div class="alert"><button class="close" data-dismiss="alert" href="#">×</button>'+nothing+'</div>');
+        setTimeout(function(){$("#message").html('')},5000);
+    }
+    return false;
+}
+function reply(uname, dwitid){
+    $('#replydwit').val('@'+uname+' ');
+    $('#replydwitid').val(dwitid);
+    $('#ReplyModal').modal('show');
+    return false
+}
+function redwit(dwitid){
+    $.get('/main/getdwit/'+dwitid+'/', function(data){
+        $('#RedwitModalBody').html(data);
+        $('#RedwitModal').modal('show');
+    });
+    return false
+}
+function sendredwit(){
+    var dwitid = $("#dwitid").html();
+    $.post('/main/dwit/',{dwitid:dwitid}, function(data){
+        $("#message").html('<div class="alert alert-'+data.status+'"><button class="close" data-dismiss="alert" href="#">×</button>'+data.message+'</div>');
+        setTimeout(function(){$("#message").html('')},5000);
+        nd = $("#nodwits").html();
+        nd++;
+        $("#nodwits").html(nd);        
+    });
+    return false
+}
+function getreply(dwitid,obj){
+    if ($(obj).find(".icon-chevron-down").length == 1) {
+        if ($('#replydiv'+dwitid+' :hidden').length == 0){
+            $.get('/main/getreplyto/'+dwitid+'/', function(data){
+                $('#replydiv'+dwitid).html(process(data));
+            });
+        } else {
+            $('#replydiv'+dwitid).toggle();
+        }
+        $(obj).html('<i class="icon-chevron-up"></i>');
+    } else {
+        $('#replydiv'+dwitid).toggle();
+        $(obj).html('<i class="icon-chevron-down"></i>');
+    }
+    return false
+}
+function process(data) {
+    data = '<div>'+data+'</div>';
+    var obj = $(data).clone();
+    var dcont = obj.find('.lead').html();
+    dcont = twttr.txt.autoLinkHashtags(dcont, {
+                'hashtagUrlBase':'/main/home/?tag=',
+                'hashtagClass':'label label-info vmiddle',
+            });
+    obj.find('.lead').html(dcont);
+    return obj.html();
+}
+</script>
+{% endblock %}
+

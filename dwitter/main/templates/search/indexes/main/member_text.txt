@@ -1,0 +1,2 @@
+{{object.descr}}
+{{object.nick}}

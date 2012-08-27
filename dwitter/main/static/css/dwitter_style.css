@@ -1,0 +1,18 @@
+.pimg1 {width:64px; height:64px; padding-right:5px;}
+.pimg2 {width:32px; height:32px; padding-right:3px;}
+.pimg3 {width:64px; height:64px; padding-right:5px;padding-bottom:10px;}
+.pusername {margin-top:20px;}
+#dwitnotice :hover {cursor: pointer;}
+.dwitstamp {color:#a0a0a0;}
+.dwittable {width:100%;}
+.dwittable td {padding-top:4px;padding-bottom:4px;}
+.dwittabletr {border-top: 1px solid #dddddd;}
+.tablereply {
+  border-top: 1px solid #dddddd;
+}
+#taglist {margin-top:20px;}
+#nfd {display: none !important;}
+#taglistul {margin-top:10px;}
+#taglistul li {padding-top:5px;}
+.help-block, .help-inline {color: #a0a0a0; font-size:11px;}
+.vmiddle {vertical-align:middle;}

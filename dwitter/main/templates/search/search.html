@@ -1,0 +1,20 @@
+{% load url from future %}
+{% load i18n %}
+        {% for result in page.object_list %}
+            <div class="well well-small">
+            <table width="100%"><tr><td align="left"><img src="{{result.object.image.url}}" class="pimg2" /> <b>{{result.object.nick}}</b> @<a href="{% url 'profile' result.object.user.username %}">{{result.object.user.username}}</a></td></tr>
+            <tr><td>{{result.object.descr}}</td></tr>
+            </table>
+            </div>
+        {% empty %}
+            <div class="well">
+                {% trans "No results" %}
+            </div>
+        {% endfor %}
+        {% if page.has_previous or page.has_next %}
+            <div class="btn-group">
+                {% if page.has_previous %}<a href="javascript:void(0);" onclick="pagesrch('{{query}}','{{page.previous_page_number}}')" class="btn">&laquo; {% trans "Previous" %}</a>{% endif %}
+                {% if page.has_next %}<a href="javascript:void(0);" onclick="pagesrch('{{query}}','{{page.next_page_number}}')" class="btn">{% trans "Next" %} &raquo;</a>{% endif %}
+            </div>
+        {% endif %}
+

@@ -1,0 +1,13 @@
+Django==1.4.1
+PIL==1.1.7
+South==0.7.6
+Whoosh==2.4.1
+celery==3.0.5
+distribute==0.6.28
+django-celery==3.0.4
+-e git+https://github.com/toastdriven/django-haystack.git#egg=django_haystack-dev
+django-taggit==0.9.3
+-e hg+https://bitbucket.org/denis/gevent#egg=gevent-dev
+-e git+https://github.com/abourget/gevent-socketio.git#egg=gevent-socketio-dev
+gunicorn==0.14.6
+redis==2.6.0

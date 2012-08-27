@@ -1,0 +1,26 @@
+#!python
+import os
+from gevent import monkey
+monkey.patch_all()
+
+from django.conf import settings
+log_dir =  os.path.join(settings.SERVERS_DIR,'log/')
+if not os.path.exists(log_dir):
+    try:
+        os.mkdir(log_dir)
+    except:
+        print "No log dir created, exiting"
+        exit()
+run_dir =  os.path.join(settings.SERVERS_DIR,'run/')
+if not os.path.exists(run_dir):
+    try:
+        os.mkdir(run_dir)
+    except:
+        print "No run dir created, exiting"
+        exit()
+bind = "127.0.0.1:8000"
+workers = 1 # fine for dev, you probably want to increase this number in production
+worker_class = "socketio.sgunicorn.GeventSocketIOWorker"
+errorlog = os.path.join(log_dir,'gunicorn.log')
+pidfile = os.path.join(run_dir,'gunicorn.pid')
+daemon = True

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{block.super}}{% trans "Twitter clone with django" %}{% endblock %}
+{% block content%}
+{% trans "Repository" as repo %}
+{% trans "More" as more %}
+<div class="hero-unit hidden-phone">
+    <img src="{{STATIC_URL}}img/dwitter.png" />
+    <p>{% trans "Twitter clone implemented in django. It's purpose is strictly educational, and shows the creation of an application like Twitter by using tools available for django. It illustrates real-time techniques like socket.io, async requests with ajax, queue scheduling with celery and use of redis for messaging." %}</p>
+    <p><a class="btn btn-primary btn-large" href="https://bitbucket.org/sv1jsb/dwitter" target="_blank">{{repo}}</a></p>
+</div>
+
+<div class="row">
+        <div class="span4 hidden-desktop hidden-tablet well">
+        <img src="{{STATIC_URL}}img/dwitter.png" />
+        <p class="lead">{% trans "Twitter clone implemented in django. It's purpose is strictly educational, and shows the creation of an application like Twitter by using tools available for django. It illustrates real-time techniques like socket.io, async requests with ajax, queue scheduling with celery and use of redis for messaging." %}</p>
+        <p><a class="btn btn-primary" href="https://bitbucket.org/sv1jsb/dwitter" target="_blank">{{repo}}</a></p>
+    </div>
+</div>
+
+<div class="row">
+        <div class="span4">
+          <h2>Gevent-Socketio</h2>
+           <p>{% trans "This is python's port of <a href='socket.io' target='_blank'>socket.io</a>. Runs with gevent and provides a an async worker for gunicorn. Supports all WebSockets formats and is a work in progress." %}</p>
+          <p><a class="btn" href="https://github.com/abourget/gevent-socketio" target="_blank">{{more}} &raquo;</a></p>
+        </div>
+        <div class="span4">
+          <h2>Bootstrap</h2>
+           <p>{% trans "A very nice css framework made by the twitter guys. It comes with build-in media query support and source code to be compiled to your needs with less." %}</p>
+          <p><a class="btn" href="http://twitter.github.com/bootstrap/index.html" target="_blank">{{more}} &raquo;</a></p>
+       </div>
+       <div class="span4">
+          <h2>Gunicorn</h2>
+          <p>{% trans "For deployment we use gunicorn with gevent. This is an easy and must have setup in order for the websockets to function properly because neither mod_wsgi nor django's server supports this protocol." %}</p>
+          <p><a class="btn" href="http://gunicorn.org/" target="_blank">{{more}} &raquo;</a></p>
+       </div>
+</div>
+<div class="row">
+        <div class="span4">
+          <h2>Celery</h2>
+           <p>{% trans "Celery is an asynchronous task queue/job queue based on distributed message passing. It is focused on real-time operation, but supports scheduling as well." %}</p>
+          <p><a class="btn" href="http://celeryproject.org/" target="_blank">{{more}} &raquo;</a></p>
+        </div>
+        <div class="span4">
+          <h2>Redis</h2>
+           <p>{% trans "Redis is an open source key value store. Here is used by celery for queuing and by socket.io for message delivery." %}</p>
+          <p><a class="btn" href="http://redis.io/" target="_blank">{{more}} &raquo;</a></p>
+       </div>
+       <div class="span4">
+          <h2>Haystack</h2>
+          <p>{% trans "Haystack is a search engine for django. Uses different engines to actually do the search. Here is used with whoosh for searching members." %}</p>
+          <p><a class="btn" href="http://haystacksearch.org/" target="_blank">{{more}} &raquo;</a></p>
+       </div>
+</div>
+{% endblock %}
+

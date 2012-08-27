@@ -1,0 +1,9 @@
+#!python
+
+from gevent import monkey
+monkey.patch_all()
+
+bind = "127.0.0.1:8000"
+workers = 1 # fine for dev, you probably want to increase this number in production
+worker_class = "socketio.sgunicorn.GeventSocketIOWorker"
+
