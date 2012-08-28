@@ -3,14 +3,20 @@
 
 Dwitter is made by different apps and modules available for django and python. It uses:
 
-* Gunicorn
-* Gevent
-* Gevent-socketio
-* Redis
-* Celery
-* Haystack
-* django-taggit
-* django-registration
+* [Celery](http://celeryproject.org)
+* [Redis](http://redis.io)
+* [Haystack](http://haystacksearch.org)
+* [Gunicorn](http://gunicorn.org)
+* [Gevent](https://bitbucket.org/denis/gevent)
+* [Gevent-socketio](http://bitbucket.org/denis/gevent)
+* [django-registration](https://bitbucket.org/ubernostrum/django-registration)
+* [django-taggit](https://github.com/alex/django-taggit)
+* [Twitter text lib](https://github.com/twitter/twitter-text-js)
+* [Bootstrap](http://twitter.github.com/bootstrap)
+
+### Purpose
+
+Dwitter is an educational and experimental project. It shows how one can combine different parts available in order to make an application like twitter. It uses websockets, distributed task queue, ajax calls and redis in order to achieve this. It can be used as a starting or reference project for other more complex ones. Implements also various django workflows like registration, authentication and translation.
 
 ### Features
 
@@ -21,10 +27,6 @@ Dwitter is made by different apps and modules available for django and python. I
 * User notification when new _dwit_ arrives
 * Direct, Reply and Redwit capability
 * Hash tags, tag search and tag watch
-
-### Purpose
-
-Dwitter is an educational and experimental project. It shows how one can combine different modules and apps available for python and django in order to make an application like twitter. It uses websockets, distributed task queue, ajax calls and redis in order to achieve this.
 
 ### Installation
 
@@ -162,19 +164,4 @@ Enjoy!!
 ### Links
 
 This project was inspired by Flavio Curella's blog [post](http://curella.org/blog/2012/jul/17/django-push-using-server-sent-events-and-websocket/) and a series of blog posts by Rick Copeland and especially [this](http://blog.pythonisito.com/2012/07/realtime-web-chat-with-socketio-and.html).
-
-Software used:
-
-* [Celery](http://celeryproject.org)
-* [Redis](http://redis.io)
-* [Haystack](http://haystacksearch.org)
-* [Gunicorn](http://gunicorn.org)
-* [Gevent](https://bitbucket.org/denis/gevent)
-* [Gevent-socketio](http://bitbucket.org/denis/gevent)
-* [django-registration](https://bitbucket.org/ubernostrum/django-registration)
-* [django-taggit](https://github.com/alex/django-taggit)
-* [Twitter text lib](https://github.com/twitter/twitter-text-js)
-* [Bootstrap](http://twitter.github.com/bootstrap)
-
-
 
