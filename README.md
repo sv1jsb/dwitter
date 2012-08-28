@@ -32,7 +32,7 @@ Dwitter is an educational and experimental project. It shows how one can combine
 
 Apart from the requirements listed in _requirements.txt_ there are some extra:
 * You must have redis installed on your system. Download the latest redis version from [redis.io](http://redis.io) and install it.
-* The gevent version listed in requirements.txt is a development one and requires the latest [Cython](http://pypi.python.org/pypi/Cython/) to be installed. If you don't want that download gevent from [google code](http://code.google.com/p/gevent/downloads/list) and install it manually. You can find a wiki page for Cython installation.
+* The gevent version listed in requirements.txt is a development one and requires the latest [Cython](http://pypi.python.org/pypi/Cython/) to be installed. If you don't want that download gevent from [google code](http://code.google.com/p/gevent/downloads/list) and install it manually. You can find a wiki [page](https://github.com/sv1jsb/dwitter/wiki/Cython-installation) for Cython installation.
 
 #### VirtualEnv
 
@@ -70,7 +70,7 @@ This will download and install all requirements.
 
 Dwitter needs 5 servers to run in order to function correctly. That's why there is a _servers_ directory containing all start/stop scripts and configuration files needed for those servers to work.
 Those servers are configured to create all their needed files under the _servers_ directory. So there is no need for you to _sudo_. Start up scripts and local database dump are provided for redis also.
-If this is not desired, in case you use redis already, you can delete this two lines from the _startall_ and _stopall_ scripts. There is also a wiki page for redis setup.
+If this is not desired, in case you use redis already, you can delete this two lines from the _startall_ and _stopall_ scripts. There is also a wiki [page](https://github.com/sv1jsb/dwitter/wiki/Redis-setup) for redis setup.
 
 ##### servers/servers.conf
 
@@ -105,7 +105,7 @@ The only necessary variable here is:
 
     PYTHON_ENV = 'path/to/python'
 
-where you must provide the same path as in servers/servers.conf ENVPYTHON variable. For a complete list of variables available in settings.py please visit the wiki page.
+where you must provide the same path as in servers/servers.conf ENVPYTHON variable. For a complete list of variables available in settings.py please visit the wiki [page](https://github.com/sv1jsb/dwitter/wiki/Settings.py-variables).
 
 #### First time setup
 
@@ -174,6 +174,7 @@ Software used:
 * [django-registration](https://bitbucket.org/ubernostrum/django-registration)
 * [django-taggit](https://github.com/alex/django-taggit)
 * [Twitter text lib](https://github.com/twitter/twitter-text-js)
+* [Bootstrap](http://twitter.github.com/bootstrap)
 
 
 
