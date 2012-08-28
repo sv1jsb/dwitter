@@ -22,6 +22,10 @@ Dwitter is made by different apps and modules available for django and python. I
 * Direct, Reply and Redwit capability
 * Hash tags, tag search and tag watch
 
+### Purpose
+
+Dwitter is an educational and experimental project. It shows how one can combine different modules and apps available for python and django in order to make an application like twitter. It uses websockets, distributed task queue, ajax calls and redis in order to achieve this.
+
 ### Installation
 
 #### Requirements
@@ -127,7 +131,7 @@ Every server can be started/stopped by its own with its starting script:
     servers/celeryd start
     etc.
 
-In order to start gunicorn you have to options.
+In order to start gunicorn you have two options.
 
 Either run it with:
 
@@ -142,5 +146,34 @@ Or:
 this will start the gunicorn server with the servers/gunicorn file as config which daemonizes it and saves logs at servers/log/gunicorn.log. In order to stop the server you need to do:
 
     servers/gu stop
+
+#### First time run
+
+Once everything is running point you browser to: *127.0.0.1:8000/* and test it.
+
+Dwitter's members have an one to one relation with django users. So when creating a user you must first create a django user, and then create a new member and relate it with the user just created.
+
+So go to admin page login with the superuser data you provided earlier and create a member for the superuser.
+
+Now you can login and use dwitter. Phew!!
+
+Enjoy!!
+
+### Links
+
+This project was inspired by Flavio Curella's blog [post](http://curella.org/blog/2012/jul/17/django-push-using-server-sent-events-and-websocket/) and a series of blog posts by Rick Copeland and especially [this](http://blog.pythonisito.com/2012/07/realtime-web-chat-with-socketio-and.html).
+
+Software used:
+
+* [Celery](http://celeryproject.org)
+* [Redis](http://redis.io)
+* [Haystack](http://haystacksearch.org)
+* [Gunicorn](http://gunicorn.org)
+* [Gevent](https://bitbucket.org/denis/gevent)
+* [Gevent-socketio](http://bitbucket.org/denis/gevent)
+* [django-registration](https://bitbucket.org/ubernostrum/django-registration)
+* [django-taggit](https://github.com/alex/django-taggit)
+* [Twitter text lib](https://github.com/twitter/twitter-text-js)
+
 
 
