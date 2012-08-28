@@ -151,13 +151,13 @@ this will start the gunicorn server with the servers/gunicorn file as config whi
 
 #### First time run
 
-Once everything is running point you browser to: *127.0.0.1:8000/* and test it.
+Once everything is running point your browser to: *127.0.0.1:8000/* and test it.
 
-Dwitter's members have an one to one relation with django users. So when creating a user you must first create a django user, and then create a new member and relate it with the user just created.
+Dwitter's members have an one to one relation with django users. So, in order to create a dwitter member you must first create a django user, then create a new member and relate it with the user just created.
 
 So go to admin page login with the superuser data you provided earlier and create a member for the superuser.
 
-Now you can login and use dwitter. Phew!!
+Now you can login and use dwitter.
 
 Enjoy!!
 
