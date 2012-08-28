@@ -28,7 +28,7 @@ Dwitter is made by different apps and modules available for django and python. I
 
 Apart from the requirements listed in _requirements.txt_ there are some extra:
 * You must have redis installed on your system. Download the latest redis version from [redis.io](http://redis.io) and install it.
-* The gevent version listed in requirements.txt is a development one and requires the latest [Cython](http://pypi.python.org/pypi/Cython/) to be installed. If you don't want that download gevent from [google code](http://code.google.com/p/gevent/downloads/list) and install it manually.
+* The gevent version listed in requirements.txt is a development one and requires the latest [Cython](http://pypi.python.org/pypi/Cython/) to be installed. If you don't want that download gevent from [google code](http://code.google.com/p/gevent/downloads/list) and install it manually. You can find a wiki page for Cython installation.
 
 #### VirtualEnv
 
@@ -36,7 +36,7 @@ It's advised, but not necessary, to install all packages under a virtual python 
 
     pip install virtualenv virtualenvwrapper
 
-Decide a name for the directory which will hold all your virtualenvs and add the next 3 lines at the end of your _.bashrc_
+Decide a name for the directory which will hold all your virtualenvs and add the next 3 lines at the end of your _.bashrc_. (Here ~/venvs is given as 
 
     export WORKON_HOME=~/venvs
     source /usr/local/bin/virtualenvwrapper.sh
@@ -50,7 +50,7 @@ Now you are ready to create the environment you will work on.
 
     mkvirtualenv dwitter
     
-Once created you can activate it by doing:
+Once created you can activate it with:
 
     workon dwitter
     
@@ -64,9 +64,9 @@ This will download and install all requirements.
 
 #### Configuration
 
-Dwitter needs 5 servers to run in order to function correctly. That's why there is _servers_ directory containing all start/stop scripts and configuration files needed for those servers to work.
-Those servers are configured to create all their needed files under the _servers_ directory. So there is no need for you to _sudo_. Start up scripts and local save are provided for redis also.
-If this is not desired, in case you use redis already, you can delete this two lines from the _startall_ and _stopall_ scripts.
+Dwitter needs 5 servers to run in order to function correctly. That's why there is a _servers_ directory containing all start/stop scripts and configuration files needed for those servers to work.
+Those servers are configured to create all their needed files under the _servers_ directory. So there is no need for you to _sudo_. Start up scripts and local database dump are provided for redis also.
+If this is not desired, in case you use redis already, you can delete this two lines from the _startall_ and _stopall_ scripts. There is also a wiki page for redis setup.
 
 ##### servers/servers.conf
 
@@ -101,5 +101,46 @@ The only necessary variable here is:
 
     PYTHON_ENV = 'path/to/python'
 
-where you must provide the same path as in servers/servers.conf ENVPYTHON variable. 
+where you must provide the same path as in servers/servers.conf ENVPYTHON variable. For a complete list of variables available in settings.py please visit the wiki page.
+
+#### First time setup
+
+Once everything is installed you must setup the database, change directory to dwitter's root (if not already there) and type the following commands:
+
+    ./manage.py syncdb                           # To create your db
+    ./manage.py createsuperuser                  # To create your first user
+    ./manage.py migrate djcelery                 # This is needed for celery
+    ./manage.py convert_to_south dwitter.main    # This is optional but useful
+    ./manage.py collectstatic                    # To have your static files ready for serving
+    ./manage.py rebuild_index                    # To create your haystack db
+
+You are now ready to start the servers.
+
+    servers/startall
+
+This will start redis, celery, celeryev, celerybeat. To stop the servers do:
+
+    servers/stopall
+
+Every server can be started/stopped by its own with its starting script:
+
+    servers/celeryd start
+    etc.
+
+In order to start gunicorn you have to options.
+
+Either run it with:
+
+    ./manage.py run_gunicorn -c gunicorn
+
+this will start the gunicorn server with the ./gunicorn file as config displaying the log at your console.
+
+Or:
+
+    servers/gu start
+
+this will start the gunicorn server with the servers/gunicorn file as config which daemonizes it and saves logs at servers/log/gunicorn.log. In order to stop the server you need to do:
+
+    servers/gu stop
+
 
