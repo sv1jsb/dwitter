@@ -26,7 +26,7 @@ def celery_dwitsaved(dwit, rendered):
 
 @task
 def celery_follow(me, m):
-    dwits = Dwit.objects.filter(member=m)
+    dwits = Dwit.objects.filter(member=m).exclude(direct=True)
     for dwit in dwits:
         DPF.objects.create(member = me, dwit = dwit, stamp = dwit.stamp)
 
