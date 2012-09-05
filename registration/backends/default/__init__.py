@@ -70,13 +70,13 @@ class DefaultBackend(object):
         class of this backend as the sender.
 
         """
-        username, email, password = kwargs['username'], kwargs['email'], kwargs['password1']
+        username, email, password, language = kwargs['username'], kwargs['email'], kwargs['password1'], kwargs['language']
         if Site._meta.installed:
             site = Site.objects.get_current()
         else:
             site = RequestSite(request)
         new_user = RegistrationProfile.objects.create_inactive_user(username, email,
-                                                                    password, site)
+                                                                    password, language, site)
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
                                      request=request)
@@ -93,10 +93,10 @@ class DefaultBackend(object):
         the class of this backend as the sender.
         
         """
-        activated = RegistrationProfile.objects.activate_user(activation_key)
+        activated, language = RegistrationProfile.objects.activate_user(activation_key)
         if activated:
             signals.user_activated.send(sender=self.__class__,
-                                        user=activated,
+                                        user=activated, language=language, 
                                         request=request)
         return activated
 

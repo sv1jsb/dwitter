@@ -58,4 +58,4 @@ class DPF(models.Model):    #Dwit Per Follower
 
 @receiver(user_activated)
 def uactivated(sender, **kwargs):
-    Member.objects.create(user=kwargs['user'], nick=kwargs['user'].username)
+    Member.objects.create(user=kwargs['user'], nick=kwargs['user'].username, language=kwargs['language'])

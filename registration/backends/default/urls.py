@@ -4,7 +4,6 @@ from django.views.generic import TemplateView
 from registration.views import activate
 from registration.views import register
 
-
 urlpatterns = patterns('',
                        url(r'^activate/complete/$',
                            TemplateView.as_view(template_name='registration/activation_complete.html'),

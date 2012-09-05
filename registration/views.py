@@ -7,7 +7,7 @@ Views which allow users to create and activate accounts.
 from django.shortcuts import redirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-
+from django.conf import settings
 from registration.backends import get_backend
 
 
@@ -199,6 +199,14 @@ def register(request, backend, success_url=None, form_class=None,
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
 
+    lang_codes = []
+    for lang in settings.LANGUAGES:
+        lang_codes.append(lang[0])
+    if request.LANGUAGE_CODE not in lang_codes:
+        language_code = 'el'
+    else:
+        language_code = request.LANGUAGE_CODE    
+
     return render_to_response(template_name,
-                              {'form': form},
+                              {'form': form,'language_code':language_code},
                               context_instance=context)

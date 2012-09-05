@@ -62,10 +62,10 @@ class RegistrationManager(models.Manager):
                 user.save()
                 profile.activation_key = self.model.ACTIVATED
                 profile.save()
-                return user
+                return user, profile.language
         return False
     
-    def create_inactive_user(self, username, email, password,
+    def create_inactive_user(self, username, email, password, language,
                              site, send_email=True):
         """
         Create a new, inactive ``User``, generate a
@@ -80,7 +80,7 @@ class RegistrationManager(models.Manager):
         new_user.is_active = False
         new_user.save()
 
-        registration_profile = self.create_profile(new_user)
+        registration_profile = self.create_profile(new_user, language)
 
         if send_email:
             registration_profile.send_activation_email(site)
@@ -88,7 +88,7 @@ class RegistrationManager(models.Manager):
         return new_user
     create_inactive_user = transaction.commit_on_success(create_inactive_user)
 
-    def create_profile(self, user):
+    def create_profile(self, user, language):
         """
         Create a ``RegistrationProfile`` for a given
         ``User``, and return the ``RegistrationProfile``.
@@ -104,7 +104,7 @@ class RegistrationManager(models.Manager):
             username = username.encode('utf-8')
         activation_key = hashlib.sha1(salt+username).hexdigest()
         return self.create(user=user,
-                           activation_key=activation_key)
+                           activation_key=activation_key, language=language)
         
     def delete_expired_users(self):
         """
@@ -176,7 +176,7 @@ class RegistrationProfile(models.Model):
     
     user = models.ForeignKey(User, unique=True, verbose_name=_('user'))
     activation_key = models.CharField(_('activation key'), max_length=40)
-    
+    language = models.CharField(_(u'Language'), max_length=5, default='en')
     objects = RegistrationManager()
     
     class Meta:

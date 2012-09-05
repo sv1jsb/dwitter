@@ -8,7 +8,7 @@ from registration.models import RegistrationProfile
 
 class RegistrationAdmin(admin.ModelAdmin):
     actions = ['activate_users', 'resend_activation_email']
-    list_display = ('user', 'activation_key_expired')
+    list_display = ('user', 'activation_key', 'activation_key_expired')
     raw_id_fields = ['user']
     search_fields = ('user__username', 'user__first_name', 'user__last_name')
 
