@@ -28,6 +28,10 @@ Dwitter is an educational and experimental project. It shows how one can combine
 * Direct, Reply and Redwit capability
 * Hash tags, tag search and tag watch
 
+### Live demo site
+
+There is a live demo site running dwitter with gunicorn and nginx for static content. You can create multiple accounts with the same email (real or fake, this is not an email gathering site). Take a look at it [here](http://dwitter.dream-solutions.gr).
+
 ### Installation
 
 #### Requirements
