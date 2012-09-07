@@ -46,7 +46,7 @@ It's advised, but not necessary, to install all packages under a virtual python 
 
     pip install virtualenv virtualenvwrapper
 
-Decide a name for the directory which will hold all your virtualenvs and add the next 3 lines at the end of your _.bashrc_. (Here ~/venvs is given as 
+Decide a name for the directory which will hold all your virtualenvs and add the next 3 lines at the end of your _.bashrc_. (Here ~/venvs is given as the virtual enviroments home directory)
 
     export WORKON_HOME=~/venvs
     source /usr/local/bin/virtualenvwrapper.sh
