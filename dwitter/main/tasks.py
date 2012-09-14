@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*- 
 
-from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.conf import settings
 from celery import task
